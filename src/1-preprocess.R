@@ -9,8 +9,8 @@ data_ext <- "data/external"
 
 cols <- c(rep("text", 7), "date", "text", "text", "numeric", rep("text", 8), rep("numeric", 5))
 
-data_clin <- read_excel("data/external/test_clinical_activity_2016-10-11.xlsx",
-                        col_types = cols) %>%
+data_clin <- list.files(data_ext, pattern = "clinical_activity", full.names = TRUE) %>%
+    map_df(read_excel, col_types = cols) %>%
     dmap_at("Age", str_replace_all, pattern = " Y", replacement = "") %>%
     dmap_at("Age", as.numeric) %>%
     select(clinician = User,
@@ -31,3 +31,5 @@ data_clin <- read_excel("data/external/test_clinical_activity_2016-10-11.xlsx",
            total_savings = `Total Savings`,
            other_costs = `Other Costs`,
            other_savings = `Other Savings`)
+
+saveRDS(data_clin, "data/tidy/clinical_activity.Rds")
