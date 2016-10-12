@@ -1,0 +1,23 @@
+---
+title: "Exploring Clinical Activity Data"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    html_notebook:
+        code_folding: hide
+        toc: yes
+        toc_float: yes
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+
+data_clin <- readRDS("../data/tidy/clinical_activity.Rds")
+```
+
+## Interventions
+
+```{r}
+data_clin %>%
+    count(clinician)
+```
+
