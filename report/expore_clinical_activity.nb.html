@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2016-10-11" />
+<meta name="date" content="2016-10-12" />
 
 <title>Exploring Clinical Activity Data</title>
 
@@ -265,7 +265,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Exploring Clinical Activity Data</h1>
-<h4 class="date"><em>October 11, 2016</em></h4>
+<h4 class="date"><em>October 12, 2016</em></h4>
 
 </div>
 
@@ -277,17 +277,6 @@ div.tocify {
 <h2>Interventions</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9jbGluICU+JVxuICAgIGNvdW50KGNsaW5pY2lhbilcbmBgYCJ9 -->
-<pre class="r"><code>data_clin %&gt;%
-    count(clinician)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NTF9LCJyZGYiOiJINHNJQUFBQUFBQUFCbDFVWFcvYk5oU1ZaU2R0MGpiT0YxRHNhWG9aMEFKeWdHNi80RXFpVEZvVTZaTFVYUHRsY0oxME0rYkpSZUppZTl3ZjNGOXFkcW1RZE9BSGl1SVJlZTY1aDFkWEZaOStQdjEwR2tWUkhQWDd2U2p1NCtzZ3hrY3ZHa1FuZHY0bml2cFgzWVlvT3NmeGkvdHdCdU1NTkVzVEVHUENJYUNpYW93bWFVSVpMeno2SnFmUXBJa2hpb2ljK0swNWxiTTBxVUdNTkFYaDBRTDREQXJrL1pWTllPN1FZU0ZyS2FTdWtEaFRVRGo0K2htY1U4VzBZU0xRRXlpSVRoUExMZmIwaEkrQUkzc0ppZ1Y5VnlVQmJVWVRLYm9UQm5MaUkxK1VDa1F1MDRSd3RvQ01HT3B6R2pjOFk5cnFZWUYrU0hHbkdNczhtVktXMUo3a0ZkTWE4alRCOUQzMFpnS3FZQUoxZ3dydXZaNUl6R1JDeWxJRkFXY1RTY1VjVWFsUmd0anYxR1JLMFZPVytaMG5GVjRGYmd5YkxpdlZhSk5USm5TRkRGd3E1cU56cU5Oa1JzVFkrdS9BVTI3MUVNNkpSMDQ0SHF0QUJlQjFEWVlTdkRYTmFzODFyUE1LR0FZV1lOQmE3Lzk1blhObURNZUVCTXNsOS9oRnpWQVNSckdwaTRLRmVrajJIemdZaWZlV3ZLTkVvWk9nYXNqbjc3MlpBbGhsNjZZMndUY0JjMUFISlNQR3paeGdRalVUMUlUTTk3QVU3R01UMUVyS0ZMTlZ4T3FDMVhXb1oxbEJLWkdhbFVRRzlGcUtXWlBUUmpVWmRHY1dNdlBmaGxNcjE5NmlFSGhJZWNlbllBaW1wcURDekh6VUtlRzY2V29hcllKUUhLZVlNOTdQeHliY3pRVlc0U1N6T1k0cExJQVRYNFpEWkZOUTJqb25TamFWZHdTWDZKUDlEVlZRWm9ndVlZN2hGa3lBOWd5WGhzd0lKOHlrQ1dwVUxHZkJWb05SYlQxYng3ejdUNWloYkY4VWVFaGdLY0pVTVI2MmRUMmd5WWd5RG5vNXR6MWdIS3J6UmJlV2Z2bHlRWEU1YVlRMXErc3oySGk2UnZRMEJqamV1Zm10TFJmWGt6cS9yQW8zVyt5Vm0vMzdENVlmeDQ4NGp0eTRkdnpIVm9yajZibllQem4rZ2NOaU4xL2llUDlNVit5NHZNWmpONzkxZWp6LzRLQ3BIclhMdis0ZVhFT04vYysyMnF6YjlXcTliSDNyYlErT25keHYvNzd4UjYzTytGOThQRDQrL25mSXY5b3NIengvMzRISHU4K2IzMjYvdUZVZlY3N2FicGU3NWMyWGV5VEcxZmNEcmhmYnI3djF0a1cyK01xbGUvN3NjKy8rQUJoK2E2M0UyOUhxajIvdG42TVA3bHFzTFpHVDNYUFg2OS9qcDVEeG82TTY4b3J2MnQvWDdaMVBhclA4Zk9jMW42RVZuUk0zWCsvWDdjNW5ndWpEelc2N1c0YmNWdHVOUjdyY291Ly9Bd3REMTUvMEJnQUEifQ== -->
-<div data-pagedtable>
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["clinician"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"AGBASI, ANGELA","2":"3"},{"1":"ANKUTSE, HILDA","2":"1"},{"1":"CHAU, TERENCE","2":"1"},{"1":"CHOW, MAN-SHAN","2":"4"},{"1":"DALWADI, VIJAY","2":"40"},{"1":"DOMONOSKE, BRAD","2":"4"},{"1":"DOMONOSKE, CHRISTINE","2":"23"},{"1":"EADES, SHANNAN","2":"32"},{"1":"EL-ALI, FARIDA","2":"2"},{"1":"FEAST-JONES, STACEY","2":"9"},{"1":"FRANCO, ELIZABETH","2":"10"},{"1":"GULBIS, BRIAN","2":"12"},{"1":"HO, NGOC PHI MY","2":"10"},{"1":"ISSAC, RENY","2":"2"},{"1":"JARDIN, CARLA","2":"11"},{"1":"JOE, JEFFREY","2":"2"},{"1":"JOHNY, JOSELIN","2":"2"},{"1":"JOSEPH, TIBY","2":"11"},{"1":"KANG, JIN","2":"25"},{"1":"KRUSTCHINSKY, LORI","2":"8"},{"1":"LAM, WENG MAN","2":"31"},{"1":"LIN, ELLEN","2":"5"},{"1":"LY, KAREN","2":"5"},{"1":"MATHEW, SIMI","2":"20"},{"1":"MCKAIG, NATALIE","2":"3"},{"1":"MCLITTLE, NICOLE","2":"6"},{"1":"MITCHELL, CANDICE","2":"7"},{"1":"MITCHELL, LATOSHA (HER PHARMACY)","2":"9"},{"1":"NAIK, MAMTA","2":"1"},{"1":"NAYAR, VIJAY","2":"13"},{"1":"NGUYEN, MINHTRI","2":"37"},{"1":"NGUYEN, MONIQUE","2":"32"},{"1":"OHIRI, CHIMDIMMA","2":"4"},{"1":"OKAFOR, IFEOMA","2":"1"},{"1":"ONWUCHURUBA, CHIZOBA","2":"2"},{"1":"PARMA, JENNIFER","2":"1"},{"1":"PATEL, RAKSHA","2":"18"},{"1":"PELSUE, BRITTANY","2":"41"},{"1":"PHAM, QUAN","2":"3"},{"1":"RANJBAR, GHAZALEH","2":"1"},{"1":"SHARAF, SHEROUK","2":"2"},{"1":"SHENAI, HIRA","2":"5"},{"1":"TESFAYE, ZINASH","2":"1"},{"1":"TEWELEIT, PATRICIA","2":"1"},{"1":"TRAN, NGUYEN","2":"6"},{"1":"TRAN, THIEN","2":"1"},{"1":"TRINH, APRIL","2":"23"},{"1":"TSE, HUBERT","2":"12"},{"1":"YAU, GIN","2":"3"},{"1":"YAU, ON","2":"6"},{"1":"ZHU, JUN","2":"4"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[51]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
