@@ -10,20 +10,70 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(forcats)
+library(stringr)
 
 data_clin <- readRDS("../data/tidy/clinical_activity.Rds")
+
+x.text <- element_text(angle = 45, hjust = 1, size = 6)
 ```
 
 ## Counts
 
+### Top 30
+
 ```{r}
 data_clin %>%
-    count(clinician)
+    dmap_at("clinician", fct_infreq) %>%
+    dmap_at("clinician", fct_lump, n = 30) %>%
+    ggplot(aes(x = clinician)) +
+    geom_bar() +
+    theme(axis.text.x = x.text)
+```
+
+### Clinical Specialists and Residents
+
+```{r}
+specialists <- c("ALLISON, TERESA", "CORTES, JENNIFER", "DOMONOSKE, BRAD", "DOMONOSKE, CHRISTINE", "EADES, SHANNAN", "GULBIS, BRIAN", "HARTMAN, HEATHER", "LAM, WENG MAN", "MITCHELL, LATOSHA (HER PHARMACY)", "NAIK, MAMTA", "PATEL, RAKSHA", "PELSUE, BRITTANY", "WEEKS, PHILLIP")
+
+residents <- c("FRANCO, ELIZABETH", "KUHL, STEPHANIE", "KUSEY, KATHLEEN", "LEE, MONICA", "RADUZYCKI, TYLER")
+
+data_clin %>%
+    filter(clinician %in% c(specialists, residents)) %>%
+    dmap_at("clinician", fct_infreq) %>%
+    ggplot(aes(x = clinician)) +
+    geom_bar() +
+    theme(axis.text.x = x.text)
 ```
 
 ```{r}
 data_clin %>%
     count(activity)
+```
+
+```{r}
+
+activities <- c("Adverse Event Prevented: Major|Adverse Event Prevented: Minor|Anticoagulation consult/management|Anticoagulation intervention|Avoidance of high cost medication|Change Antimicrobial Dose or Route|CPR/Code attended|Discharge medication counseling|Discontinue inappropriate antimicrobials|Drug Information Consult|Drug therapy change|Initiate antibiotics for untreated infection|Initiate Antimicrobials|IV to PO conversion - antimicrobial|IV to PO conversion - non-antimicrobial|Lab ordered|Medication Reconciliation|Non-formulary to formulary conversion|Pain consults|Pharmacokinetic drug consult/management|Post-discharge micro intervention|Renal Dosing - antimicrobial|Streamline/De-escalate gram negative therapy|Surgical Antibiotic prophylaxis compliance|Therapeutic drug monitoring intervention|Weekend Sign-Out")
+
+data_clin %>%
+    filter(clinician %in% c(specialists, residents)) %>%
+    dmap_at("activity", str_extract, pattern = activities) %>%
+    dmap_at("activity", fct_infreq) %>%
+    # dmap_at("activity", fct_lump, n = 30) %>%
+    ggplot(aes(x = activity)) +
+    geom_bar() +
+    theme(axis.text.x = x.text)
+```
+
+```{r}
+data_clin %>%
+    filter(clinician %in% c(specialists, residents)) %>%
+    dmap_at("activity", str_extract, pattern = activities) %>%
+    dmap_at("activity", fct_infreq) %>%
+    dmap_at("activity", fct_lump, n = 15) %>%
+    ggplot(aes(x = activity)) +
+    geom_bar() +
+    theme(axis.text.x = x.text)
 ```
 
 ```{r}
@@ -34,10 +84,18 @@ data_clin %>%
 ```{r}
 data_clin %>%
     dmap_at("rec_location", fct_infreq) %>%
-    # dmap_at("rec_location", fct_lump, n = 30) %>%
     ggplot(aes(x = rec_location)) +
     geom_bar() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6))
+    theme(axis.text.x = x.text)
+```
+
+```{r}
+data_clin %>%
+    dmap_at("rec_location", fct_infreq) %>%
+    dmap_at("rec_location", fct_lump, n = 30) %>%
+    ggplot(aes(x = rec_location)) +
+    geom_bar() +
+    theme(axis.text.x = x.text)
 ```
 
 ```{r}
@@ -45,6 +103,6 @@ data_clin %>%
     dmap_at("status", fct_infreq) %>%
     ggplot(aes(x = status)) +
     geom_bar() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = x.text)
 ```
 
