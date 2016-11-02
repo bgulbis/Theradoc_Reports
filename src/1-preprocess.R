@@ -5,7 +5,7 @@ library(readxl)
 library(stringr)
 library(lubridate)
 
-data_ext <- "data/external"
+data_ext <- "data/raw"
 
 cols <- c(rep("text", 7), "date", "text", "text", "numeric", rep("text", 8), rep("numeric", 5))
 
