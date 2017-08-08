@@ -63,4 +63,4 @@ data_gen <- list.files(data_ext, pattern = "resident_general", full.names = TRUE
     separate(reason, c("reason1", "reason2", "reason3", "reason4", "reason5", "reason6"), sep = ",", remove = FALSE)
 
 saveRDS(data_clin, "data/tidy/resident_clinical.Rds")
-saveRDS(data_clin, "data/tidy/resident_general.Rds")
+saveRDS(data_gen, "data/tidy/resident_general.Rds")
