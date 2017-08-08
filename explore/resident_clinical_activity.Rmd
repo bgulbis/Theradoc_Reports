@@ -1,0 +1,35 @@
+---
+title: "Exploring Resident Theradoc Documentation"
+author: "Brian Gulbis"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    html_document:
+        code_folding: hide
+        toc: yes
+        toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(forcats)
+library(stringr)
+library(themebg)
+
+data_clin <- readRDS("../data/tidy/resident_clinical.Rds")
+
+x.text <- element_text(angle = 45, hjust = 1, size = 6)
+```
+
+```{r}
+data_clin %>%
+    mutate_at("resident", fct_infreq) %>%
+    mutate_at("resident", fct_rev) %>%
+    ggplot(aes(x = resident)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bg() 
+```
