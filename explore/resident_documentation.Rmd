@@ -13,23 +13,75 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(forcats)
 library(stringr)
 library(themebg)
 
 data_clin <- readRDS("../data/tidy/resident_clinical.Rds")
+data_gen <- readRDS("../data/tidy/resident_general.Rds")
+
+sepsis <- c("Initiate Antimicrobials", 
+            "Change Current Antimicrobial(s)", 
+            "Change Antimicrobial Dose or Route",
+            "Fluid Resuscitation",
+            "Lab or Micro Test Recommended",
+            "No Intervention Required")
 
 x.text <- element_text(angle = 45, hjust = 1, size = 6)
 ```
 
-```{r}
+# Clinical Activity
+```{r, fig.cap="Total number of clinical activities documented"}
 data_clin %>%
     mutate_at("resident", fct_infreq) %>%
     mutate_at("resident", fct_rev) %>%
     ggplot(aes(x = resident)) +
     geom_bar() +
     coord_flip() +
-    theme_bg() 
+    theme_bg(yticks = FALSE) 
 ```
+
+## Sepsis Alerts
+
+```{r, fig.cap="Number of sepsis alerts documented by resident"}
+data_clin %>%
+    select(-activity) %>%
+    gather(act_num, activity, act1:act6) %>%
+    filter(activity %in% sepsis) %>%
+    mutate_at("resident", fct_infreq) %>%
+    mutate_at("resident", fct_rev) %>%
+    ggplot(aes(x = resident)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bg(yticks = FALSE) 
+```
+
+```{r, fig.cap="Types of sepsis alert interventions"}
+data_clin %>%
+    select(-activity) %>%
+    gather(act_num, activity, act1:act6) %>%
+    filter(activity %in% sepsis) %>%
+    mutate_at("activity", fct_infreq) %>%
+    mutate_at("activity", fct_rev) %>%
+    ggplot(aes(x = activity)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bg(yticks = FALSE)
+```
+
+## On-Call Questions
+
+# Good Catches
+```{r, fig.cap="Total number of general activities documented"}
+data_gen %>%
+    mutate_at("resident", fct_infreq) %>%
+    mutate_at("resident", fct_rev) %>%
+    ggplot(aes(x = resident)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bg(yticks = FALSE) 
+```
+
+
