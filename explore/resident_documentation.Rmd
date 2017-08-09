@@ -181,3 +181,25 @@ data_gen %>%
     facet_wrap(~ resident, ncol = 2) +
     theme_bg()
 ```
+
+```{r, fig.cap="Number of good catches documented by each resident during the current month. The x indicates the number documented last month. The | indicates the target."}
+data_gen %>%
+    filter(rec_month == cur_month | rec_month == cur_month - months(1)) %>%
+    count(resident, rec_month) %>%
+    mutate_at("resident", str_to_title) %>%
+    mutate(current = if_else(rec_month == cur_month, "current", "previous")) %>%
+    select(-rec_month) %>%
+    spread(current, n, fill = 0) %>%
+    arrange(desc(current), resident) %>%
+    mutate_at("resident", as_factor) %>%
+    ggplot(aes(x = resident)) +
+    geom_bar(aes(y = current), stat = "identity", width = 0.5, fill = "grey65") +
+    geom_errorbar(aes(ymin = 5, ymax = 5), width = 0.25) +
+    geom_point(aes(y = previous), shape = 4, size = 2) +
+    xlab("") +
+    ylab("") +
+    coord_flip() +
+    theme_bg(xticks = FALSE, yticks = FALSE) +
+    theme(axis.line = element_blank())
+```
+
