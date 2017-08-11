@@ -54,6 +54,10 @@ qtd <- data_gen %>%
     mutate_at("resident", as_factor) %>%
     mutate_at("n", funs(coalesce(., as.integer(0))))
 
+qtd_alert <- qtd %>%
+    mutate(flag = n == 0) %>%
+    filter(flag)
+
 mtd <- data_gen %>%
     filter(rec_month == cur_month) %>%
     count(resident, weekday, sort = TRUE) %>%
@@ -72,10 +76,11 @@ prev_month <- data_gen %>%
 ggplot() +
     geom_bar(aes(x = resident, y = n, fill = weekday), data = mtd, stat = "identity", width = 0.5) +
     geom_point(aes(x = resident, y = n), data = prev_month, shape = 4, size = 2) +
-    geom_errorbar(aes(x = resident, ymin = 5, ymax = 5), data = mtd, size = 1.25, width = 0.3) +
+    geom_errorbar(aes(x = resident, ymin = 5, ymax = 5), data = mtd, width = 0.3, size = 0.75) +
     geom_text(aes(x = resident, y = -0.5, label = n), data = qtd, size = 3.25) +
     annotate("text", x = 11, y = -0.5, label = "QTD", size = 3.25, color = "grey35") +
     annotate("text", x = 11, y = 5, label = "Target", size = 3.25, color = "grey35") +
+    geom_point(aes(x = resident, y = -1), data = qtd_alert, shape = 19, color = "black") +
     expand_limits(x = 12) +
     ggtitle("Good Catches for Current Month-to-Date") +
     labs(caption = "QTD = Number for current Quarter-to-Date. X = Results for previous month.") +
