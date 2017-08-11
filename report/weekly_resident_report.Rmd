@@ -1,0 +1,90 @@
+---
+title: "Documentation in Theradoc"
+date: "Data through August 9, 2017"
+output: pdf_document
+classoption: landscape
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(forcats)
+library(stringr)
+library(themebg)
+
+data_clin <- readRDS("../data/tidy/resident_clinical.Rds") %>%
+    mutate_at("resident", str_to_title) %>%
+    mutate(day_week = wday(rec_datetime, TRUE),
+           weekday = !(wday(rec_datetime, TRUE) %in% c("Sat", "Sun")),
+           rec_week = if_else(wday(rec_datetime, TRUE) == "Sun", floor_date(rec_datetime, "week") - days(6), floor_date(rec_datetime, "week") + days(1)),
+           rec_month = floor_date(rec_datetime, "month"),
+           rec_quarter = floor_date(rec_datetime, "quarter"))
+
+data_gen <- readRDS("../data/tidy/resident_general.Rds") %>%
+    mutate_at("resident", str_to_title) %>%
+    mutate(day_week = wday(rec_datetime, TRUE),
+           weekday = !(wday(rec_datetime, TRUE) %in% c("Sat", "Sun")),
+           rec_week = if_else(wday(rec_datetime, TRUE) == "Sun", floor_date(rec_datetime, "week") - days(6), floor_date(rec_datetime, "week") + days(1)),
+           rec_month = floor_date(rec_datetime, "month"),
+           rec_quarter = floor_date(rec_datetime, "quarter"))
+
+sepsis <- c("Initiate Antimicrobials", 
+            "Change Current Antimicrobial(s)", 
+            "Change Antimicrobial Dose or Route",
+            "Fluid Resuscitation",
+            "Lab or Micro Test Recommended",
+            "No Intervention Required")
+
+res <- data_frame(resident = c("Doyle, Meagan", "Kim, Sara", "Procopio, Vincent", "Moore, Megan", "Lai, Wei", "Leung, Helen", "Stephenson, Elizabeth", "Nguyen, Steffany", "Szymanski, Tom", "Wilson, Lance"))
+
+cur_month = mdy("8/1/2017")
+cur_quarter = mdy("7/1/2017")
+```
+
+```{r, fig.cap="QTD is the number of good catches documented for the current Quarter-to-Date. The x indicates the number documented last month. The | indicates the monthly target.", fig.height=4.5, fig.width=7, }
+qtd <- data_gen %>%
+    filter(rec_quarter == cur_quarter) %>%
+    count(resident, sort = TRUE) %>%
+    full_join(res, by = "resident") %>%
+    mutate_at("resident", as_factor) %>%
+    mutate_at("n", funs(coalesce(., as.integer(0))))
+
+mtd <- data_gen %>%
+    filter(rec_month == cur_month) %>%
+    count(resident, weekday, sort = TRUE) %>%
+    full_join(res, by = "resident") %>%
+    mutate_at("resident", factor, levels = levels(qtd$resident)) %>%
+    mutate_at("n", funs(coalesce(., as.integer(0)))) %>%
+    mutate_at("weekday", funs(coalesce(., FALSE)))
+
+prev_month <- data_gen %>%
+    filter(rec_month == cur_month - months(1)) %>%
+    count(resident, sort = TRUE) %>%
+    full_join(res, by = "resident") %>%
+    mutate_at("resident", factor, levels = levels(qtd$resident)) %>%
+    mutate_at("n", funs(coalesce(., as.integer(0))))
+
+ggplot() +
+    geom_bar(aes(x = resident, y = n, fill = weekday), data = mtd, stat = "identity", width = 0.5) +
+    geom_point(aes(x = resident, y = n), data = prev_month, shape = 4, size = 2) +
+    geom_errorbar(aes(x = resident, ymin = 5, ymax = 5), data = mtd, size = 1.25, width = 0.3) +
+    geom_text(aes(x = resident, y = -0.5, label = n), data = qtd, size = 3.25) +
+    annotate("text", x = 11, y = -0.5, label = "QTD", size = 3.25, color = "grey35") +
+    annotate("text", x = 11, y = 5, label = "Target", size = 3.25, color = "grey35") +
+    expand_limits(x = 12) +
+    ggtitle("Good Catches for Current Month-to-Date") +
+    xlab("") +
+    scale_y_continuous("", breaks = seq(0, max(5, max(mtd$n)), 1)) +
+    scale_fill_manual("", values = c("TRUE" = "grey65", "FALSE" = "grey85"), labels = c("Weekend", "Rotation")) +
+    coord_flip() +
+    theme_bg(xticks = FALSE, yticks = FALSE) +
+    theme(axis.line = element_blank(), 
+          legend.position = "bottom", 
+          plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"),
+          axis.text.y = element_text(hjust = 0))
+```
