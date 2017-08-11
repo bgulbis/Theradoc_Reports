@@ -92,16 +92,39 @@ data_clin %>%
 ```
 
 ```{r, fig.cap="Number of sepsis alerts documented by resident"}
-data_clin %>%
+qtd <- data_clin %>%
     select(-activity) %>%
     gather(act_num, activity, act1:act6) %>%
-    filter(activity %in% sepsis) %>%
-    mutate_at("resident", fct_infreq) %>%
-    mutate_at("resident", fct_rev) %>%
-    ggplot(aes(x = resident)) +
-    geom_bar() +
+    filter(activity %in% sepsis,
+           rec_quarter == cur_quarter) %>%
+    count(resident, sort = TRUE) %>%
+    full_join(res, by = "resident") %>%
+    mutate_at("resident", as_factor) %>%
+    mutate_at("n", funs(coalesce(., as.integer(0))))
+
+prev_quarter <- data_clin %>%
+    select(-activity) %>%
+    gather(act_num, activity, act1:act6) %>%
+    filter(activity %in% sepsis,
+           rec_quarter == cur_quarter - months(3)) %>%
+    count(resident, sort = TRUE) %>%
+    full_join(res, by = "resident") %>%
+    mutate_at("resident", factor, levels = levels(qtd$resident)) %>%
+    mutate_at("n", funs(coalesce(., as.integer(0))))
+
+ggplot() +
+    geom_bar(aes(x = resident, y = n), data = qtd, stat = "identity", width = 0.5) +
+    geom_point(aes(x = resident, y = n), data = prev_quarter, shape = 4, size = 2) +
+    ggtitle("Sepsis Alerts for Current Quarter-to-Date") +
+    labs(caption = "The x indicates results for previous quarter") +
+    xlab("") +
+    scale_y_continuous("") +
     coord_flip() +
-    theme_bg(yticks = FALSE) 
+    theme_bg(xticks = FALSE, yticks = FALSE) +
+    theme(axis.line = element_blank(), 
+          legend.position = "bottom", 
+          plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"),
+          axis.text.y = element_text(hjust = 0))
 ```
 
 ```{r, fig.cap="Types of sepsis alert interventions"}
@@ -238,6 +261,7 @@ ggplot() +
     annotate("text", x = 11, y = 5, label = "Target", size = 3.25, color = "grey35") +
     expand_limits(x = 12) +
     ggtitle("Good Catches for Current Month-to-Date") +
+    labs(caption = "QTD = Number for current Quarter-to-Date. X = results for previous month.") +
     xlab("") +
     scale_y_continuous("", breaks = seq(0, max(5, max(mtd$n)), 1)) +
     scale_fill_manual("", values = c("TRUE" = "grey65", "FALSE" = "grey85"), labels = c("Weekend", "Rotation")) +
