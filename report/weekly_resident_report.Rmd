@@ -1,6 +1,6 @@
 ---
 title: "Documentation in Theradoc"
-date: "Data through August 9, 2017"
+date: "Data through August 13, 2017"
 output: pdf_document
 classoption: landscape
 ---
@@ -48,7 +48,7 @@ cur_month = mdy("8/1/2017")
 cur_quarter = mdy("7/1/2017")
 ```
 
-```{r, fig.width = 7, fig.height=5, fig.align='center'}
+```{r, fig.width=7, fig.height=5, fig.align='center'}
 qtd <- data_gen %>%
     filter(rec_quarter == cur_quarter) %>%
     count(resident, sort = TRUE) %>%
@@ -88,7 +88,7 @@ ggplot() +
     labs(caption = "QTD = Number for current Quarter-to-Date. X = Results for previous month.") +
     xlab("") +
     scale_y_continuous("", breaks = seq(0, max(5, max(mtd$n)), 1)) +
-    scale_fill_brewer("", palette = "Greys", labels = c("Weekend", "Rotation")) +
+    scale_fill_manual("", values = c("#bdbdbd", "#636363"), labels = c("Weekend", "Rotation")) +
     coord_flip() +
     theme_bg(xticks = FALSE, yticks = FALSE) +
     theme(axis.line = element_blank(), 
@@ -119,7 +119,7 @@ prev_quarter <- data_clin %>%
     mutate_at("n", funs(coalesce(., as.integer(0))))
 
 sepsis_plot <- ggplot() +
-    geom_bar(aes(x = resident, y = n), data = qtd, stat = "identity", width = 0.5, fill = "#bdbdbd") +
+    geom_bar(aes(x = resident, y = n), data = qtd, stat = "identity", width = 0.5, fill = "#636363") +
     geom_point(aes(x = resident, y = n), data = prev_quarter, shape = 4, size = 2) +
     ggtitle("Sepsis Alerts for Quarter-to-Date") +
     # labs(caption = "X = Results for previous quarter.") +
@@ -133,7 +133,7 @@ sepsis_plot <- ggplot() +
           axis.text.y = element_text(hjust = 0))
 ```
 
-```{r sepsis_interventions}
+```{r sepsis_interventions, eval=FALSE}
 sepsis_interventions <- data_clin %>%
     select(-activity) %>%
     gather(act_num, activity, act1:act6) %>%
@@ -141,7 +141,7 @@ sepsis_interventions <- data_clin %>%
     mutate_at("activity", fct_infreq) %>%
     mutate_at("activity", fct_rev) %>%
     ggplot(aes(x = activity)) +
-    geom_bar(fill = "#bdbdbd") +
+    geom_bar(fill = "#636363") +
     xlab("") +
     ylab("") +
     coord_flip() +
@@ -154,8 +154,12 @@ sepsis_dayweek <- data_clin %>%
     gather(act_num, activity, act1:act6) %>%
     filter(activity %in% sepsis) %>%
     count(day_week) %>%
+    spread(day_week, n, fill = 0, drop = FALSE) %>%
+    gather(day_week, n, Sun:Sat) %>%
+    mutate_at("day_week", fct_inorder) %>%
+    # mutate_at("day_week", factor, ordered = TRUE, levels = levels(data_clin$day_week)) %>%
     ggplot(aes(x = day_week, y = n)) +
-    geom_bar(stat = "identity", fill = "#bdbdbd") +
+    geom_bar(stat = "identity", fill = "#636363") +
     ggtitle("Sepsis Alerts by Day of Week") +
     xlab("") +
     ylab("") +
@@ -185,7 +189,7 @@ prev_quarter <- data_clin %>%
     mutate_at("n", funs(coalesce(., as.integer(0))))
 
 oncall_plot <- ggplot() +
-    geom_bar(aes(x = resident, y = n), data = qtd, stat = "identity", width = 0.5, fill = "#bdbdbd") +
+    geom_bar(aes(x = resident, y = n), data = qtd, stat = "identity", width = 0.5, fill = "#636363") +
     geom_point(aes(x = resident, y = n), data = prev_quarter, shape = 4, size = 2) +
     ggtitle("On-Call Questions for Quarter-to-Date") +
     # labs(caption = "X = Results for previous quarter.") +
@@ -205,8 +209,11 @@ oncall_dayweek <- data_clin %>%
     gather(act_num, activity, act1:act6) %>%
     filter(activity == "Resident On-Call") %>%
     count(day_week) %>%
+    spread(day_week, n, fill = 0, drop = FALSE) %>%
+    gather(day_week, n, Sun:Sat) %>%
+    mutate_at("day_week", fct_inorder) %>%
     ggplot(aes(x = day_week, y = n)) +
-    geom_bar(stat = "identity", fill = "#bdbdbd") +
+    geom_bar(stat = "identity", fill = "#636363") +
     ggtitle("On-Call Questions by Day of Week") +
     xlab("") +
     ylab("") +
@@ -214,7 +221,7 @@ oncall_dayweek <- data_clin %>%
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
 
-```{r, fig.width = 7, fig.height=5, fig.align='center'}
+```{r, fig.width=8, fig.height=5, fig.align='center'}
 grid.arrange(sepsis_plot, oncall_plot, sepsis_dayweek, oncall_dayweek, ncol = 2)
 ```
 
