@@ -88,8 +88,9 @@ ggplot() +
     expand_limits(x = 12) +
     ggtitle("Good Catches for Current Month-to-Date") +
     labs(caption = "QTD = Number for current Quarter-to-Date. X = Results for previous month.") +
-    xlab("") +
-    scale_y_continuous("", breaks = seq(0, max(5, max(mtd$n)), 1)) +
+    xlab(NULL) +
+    ylab(NULL) +
+    # scale_y_continuous("", labels = scales::comma_format(digits = 0)) +
     scale_fill_manual("", values = c("#bdbdbd", "#636363"), labels = c("Weekend", "Rotation")) +
     coord_flip() +
     theme_bg(xticks = FALSE, yticks = FALSE) +
@@ -125,8 +126,8 @@ sepsis_plot <- ggplot() +
     geom_point(aes(x = resident, y = n), data = prev_quarter, shape = 4, size = 2) +
     ggtitle("Sepsis Alerts for Quarter-to-Date") +
     # labs(caption = "X = Results for previous quarter.") +
-    xlab("") +
-    scale_y_continuous("") +
+    xlab(NULL) +
+    ylab(NULL) +
     coord_flip() +
     theme_bg(xticks = FALSE, yticks = FALSE) +
     theme(axis.line = element_blank(), 
@@ -144,8 +145,8 @@ sepsis_interventions <- data_clin %>%
     mutate_at("activity", fct_rev) %>%
     ggplot(aes(x = activity)) +
     geom_bar(fill = "#636363") +
-    xlab("") +
-    ylab("") +
+    xlab(NULL) +
+    ylab(NULL) +
     coord_flip() +
     theme_bg(yticks = FALSE)
 ```
@@ -163,8 +164,8 @@ sepsis_dayweek <- data_clin %>%
     ggplot(aes(x = day_week, y = n)) +
     geom_bar(stat = "identity", fill = "#636363") +
     ggtitle("Sepsis Alerts by Day of Week") +
-    xlab("") +
-    ylab("") +
+    xlab(NULL) +
+    ylab(NULL) +
     theme_bg(xticks = FALSE) +
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
@@ -195,8 +196,8 @@ oncall_plot <- ggplot() +
     geom_point(aes(x = resident, y = n), data = prev_quarter, shape = 4, size = 2) +
     ggtitle("On-Call Questions for Quarter-to-Date") +
     # labs(caption = "X = Results for previous quarter.") +
-    xlab("") +
-    scale_y_continuous("") +
+    xlab(NULL) +
+    ylab(NULL) +
     coord_flip() +
     theme_bg(xticks = FALSE, yticks = FALSE) +
     theme(axis.line = element_blank(), 
@@ -217,8 +218,8 @@ oncall_dayweek <- data_clin %>%
     ggplot(aes(x = day_week, y = n)) +
     geom_bar(stat = "identity", fill = "#636363") +
     ggtitle("On-Call Questions by Day of Week") +
-    xlab("") +
-    ylab("") +
+    xlab(NULL) +
+    ylab(NULL) +
     theme_bg(xticks = FALSE) +
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
