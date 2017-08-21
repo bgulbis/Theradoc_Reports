@@ -1,7 +1,9 @@
 ---
 title: "Documentation in Theradoc"
-date: "Data through August 13, 2017"
-output: pdf_document
+date: "Data through August 20, 2017"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
 classoption: landscape
 ---
 
@@ -9,8 +11,8 @@ classoption: landscape
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
-```{r, warning=FALSE, message=FALSE}
+```{r data, warning=FALSE, message=FALSE}
+# source("../src/1-preprocess.R")
 library(tidyverse)
 library(lubridate)
 library(forcats)
@@ -48,7 +50,7 @@ cur_month = mdy("8/1/2017")
 cur_quarter = mdy("7/1/2017")
 ```
 
-```{r, fig.width=7, fig.height=5, fig.align='center'}
+```{r good_catches, fig.width=7, fig.height=5, fig.align='center'}
 qtd <- data_gen %>%
     filter(rec_quarter == cur_quarter) %>%
     count(resident, sort = TRUE) %>%
@@ -221,7 +223,7 @@ oncall_dayweek <- data_clin %>%
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
 
-```{r, fig.width=8, fig.height=5, fig.align='center'}
+```{r clinical, fig.width=8, fig.height=5, fig.align='center'}
 grid.arrange(sepsis_plot, oncall_plot, sepsis_dayweek, oncall_dayweek, ncol = 2)
 ```
 
