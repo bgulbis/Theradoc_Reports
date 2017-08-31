@@ -1,6 +1,6 @@
 ---
 title: "Documentation in Theradoc"
-date: "Data through August 20, 2017"
+date: 'Updated on `r format(max(file.info(list.files("../data/raw", pattern = "resident_general", full.names = TRUE))$mtime), "%B %d, %Y")`'
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -9,11 +9,12 @@ classoption: landscape
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+# source("../src/1-preprocess.R")
 ```
 
 ```{r data, warning=FALSE, message=FALSE}
-# source("../src/1-preprocess.R")
 library(tidyverse)
+library(readxl)
 library(lubridate)
 library(forcats)
 library(stringr)
@@ -21,7 +22,35 @@ library(themebg)
 library(grid)
 library(gridExtra)
 
-data_clin <- readRDS("../data/tidy/resident_clinical.Rds") %>%
+data_ext <- "../data/raw"
+# data_tidy <- "../data/tidy/"
+
+clin_cols <- c(rep("text", 7), "date", "text", "text", "numeric", rep("text", 8), rep("numeric", 5))
+
+data_clin <- list.files(data_ext, pattern = "resident_clinical", full.names = TRUE) %>%
+    map_df(read_excel, col_types = clin_cols) %>%
+    mutate_at("Age", str_replace_all, pattern = " Y", replacement = "") %>%
+    mutate_at("Age", as.numeric) %>%
+    select(resident = User,
+           fin = `Account Number`,
+           age = Age,
+           provider = `Receiving Clinician`,
+           rec_datetime = `Date Entered`,
+           rec_type = `Intervention Type`,
+           rec_location = `Intervention Location`,
+           time_spent = `Time Spent (in minutes)`,
+           alert_num = `Related Alert`,
+           alert_name = `Alert Title`,
+           activity = `Clinical Activities`,
+           follow_up = `Follow-up Status`,
+           status = `Intervention Status`,
+           rec_savings = `Intervention Savings`,
+           total_costs = `Total Cost`,
+           total_savings = `Total Savings`,
+           other_costs = `Other Costs`,
+           other_savings = `Other Savings`) %>%
+    mutate_at("activity", str_replace_all, pattern = " \\(prevent order, discontinue, change\\)", replacement = "") %>%
+    separate(activity, c("act1", "act2", "act3", "act4", "act5", "act6"), sep = ",", remove = FALSE) %>%
     mutate_at("resident", str_to_title) %>%
     mutate(day_week = wday(rec_datetime, TRUE),
            weekday = !(wday(rec_datetime, TRUE) %in% c("Sat", "Sun")),
@@ -29,7 +58,33 @@ data_clin <- readRDS("../data/tidy/resident_clinical.Rds") %>%
            rec_month = floor_date(rec_datetime, "month"),
            rec_quarter = floor_date(rec_datetime, "quarter"))
 
-data_gen <- readRDS("../data/tidy/resident_general.Rds") %>%
+gen_cols <- c(rep("text", 7), "date", "text", "text", "numeric", rep("text", 10), rep("numeric", 5))
+
+data_gen <- list.files(data_ext, pattern = "resident_general", full.names = TRUE) %>%
+    map_df(read_excel, col_types = gen_cols) %>%
+    mutate_at("Age", str_replace_all, pattern = " Y", replacement = "") %>%
+    mutate_at("Age", as.numeric) %>%
+    select(resident = User,
+           fin = `Account Number`,
+           age = Age,
+           provider = `Receiving Clinician`,
+           rec_datetime = `Date Entered`,
+           rec_type = `Intervention Type`,
+           rec_location = `Intervention Location`,
+           time_spent = `Time Spent (in minutes)`,
+           alert_num = `Related Alert`,
+           alert_name = `Alert Title`,
+           reason = Reasons,
+           comment = `Team Comments`,
+           follow_up = `Follow-up Status`,
+           status = `Intervention Status`,
+           rec_savings = `Intervention Savings`,
+           total_costs = `Total Cost`,
+           total_savings = `Total Savings`,
+           other_costs = `Other Costs`,
+           other_savings = `Other Savings`) %>%
+    mutate_at("reason", str_replace_all, pattern = " \\(renal/hepatic, etc.\\)", replacement = "") %>%
+    separate(reason, c("reason1", "reason2", "reason3", "reason4", "reason5", "reason6"), sep = ",", remove = FALSE) %>%
     mutate_at("resident", str_to_title) %>%
     mutate(day_week = wday(rec_datetime, TRUE),
            weekday = !(wday(rec_datetime, TRUE) %in% c("Sat", "Sun")),
@@ -50,7 +105,7 @@ cur_month = mdy("8/1/2017")
 cur_quarter = mdy("7/1/2017")
 ```
 
-```{r good_catches, fig.width=7, fig.height=5, fig.align='center'}
+```{r good_catches, fig.width=7, fig.height=5, fig.lp='', fig.align='center'}
 qtd <- data_gen %>%
     filter(rec_quarter == cur_quarter) %>%
     count(resident, sort = TRUE) %>%
@@ -77,14 +132,20 @@ prev_month <- data_gen %>%
     mutate_at("resident", factor, levels = levels(qtd$resident)) %>%
     mutate_at("n", funs(coalesce(., as.integer(0))))
 
-ggplot() +
+g <- ggplot() +
     geom_bar(aes(x = resident, y = n, fill = weekday), data = mtd, stat = "identity", width = 0.5) +
     geom_point(aes(x = resident, y = n), data = prev_month, shape = 4, size = 2) +
     geom_errorbar(aes(x = resident, ymin = 5, ymax = 5), data = mtd, width = 0.3, size = 0.75) +
     geom_text(aes(x = resident, y = -0.5, label = n), data = qtd, size = 3.25) +
     annotate("text", x = 11, y = -0.5, label = "QTD", size = 3.25, color = "grey35") +
-    annotate("text", x = 11, y = 5, label = "Target", size = 3.25, color = "grey35") +
-    geom_point(aes(x = resident, y = -1), data = qtd_alert, shape = 19, color = "black") +
+    annotate("text", x = 11, y = 5, label = "Target", size = 3.25, color = "grey35")
+
+if (nrow(qtd_alert) > 0) {
+    g <- g +
+        geom_point(aes(x = resident, y = -1), data = qtd_alert, shape = 19, color = "black")
+}
+
+g <- g +
     expand_limits(x = 12) +
     ggtitle("Good Catches for Current Month-to-Date") +
     labs(caption = "QTD = Number for current Quarter-to-Date. X = Results for previous month.") +
@@ -98,6 +159,8 @@ ggplot() +
           legend.position = "bottom", 
           plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"),
           axis.text.y = element_text(hjust = 0))
+
+g
 ```
 
 ```{r sepsis}
