@@ -101,7 +101,7 @@ sepsis <- c("Initiate Antimicrobials",
 
 res <- data_frame(resident = c("Doyle, Meagan", "Kim, Sara", "Procopio, Vincent", "Moore, Megan", "Lai, Wei", "Leung, Helen", "Stephenson, Elizabeth", "Nguyen, Steffany", "Szymanski, Tom", "Wilson, Lance"))
 
-cur_month = mdy("8/1/2017")
+cur_month = mdy("9/1/2017")
 cur_quarter = mdy("7/1/2017")
 ```
 
