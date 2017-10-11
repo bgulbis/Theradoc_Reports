@@ -8,7 +8,7 @@ classoption: landscape
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 # source("../src/1-preprocess.R")
 ```
 
@@ -101,8 +101,8 @@ sepsis <- c("Initiate Antimicrobials",
 
 res <- data_frame(resident = c("Doyle, Meagan", "Kim, Sara", "Procopio, Vincent", "Moore, Megan", "Lai, Wei", "Leung, Helen", "Stephenson, Elizabeth", "Nguyen, Steffany", "Szymanski, Tom", "Wilson, Lance"))
 
-cur_month = mdy("9/1/2017")
-cur_quarter = mdy("7/1/2017")
+cur_month = mdy("10/1/2017")
+cur_quarter = mdy("10/1/2017")
 ```
 
 ```{r good_catches, fig.width=7, fig.height=5, fig.lp='', fig.align='center'}
@@ -199,7 +199,7 @@ sepsis_plot <- ggplot() +
           axis.text.y = element_text(hjust = 0))
 ```
 
-```{r sepsis_interventions, eval=FALSE}
+```{r sepsis_interventions}
 sepsis_interventions <- data_clin %>%
     select(-activity) %>%
     gather(act_num, activity, act1:act6) %>%
@@ -212,6 +212,23 @@ sepsis_interventions <- data_clin %>%
     ylab(NULL) +
     coord_flip() +
     theme_bg(yticks = FALSE)
+```
+
+```{r sepsis_weekly}
+sepsis_weekly <- data_clin %>%
+    filter(rec_week >= ymd("2017-07-24")) %>%
+    select(-activity) %>%
+    gather(act_num, activity, act1:act6) %>%
+    filter(activity %in% sepsis) %>%
+    count(rec_week) %>%
+    ggplot(aes(x = rec_week, y = n)) +
+    geom_line() +
+    ggtitle("Sepsis Alerts by Week") +
+    xlab(NULL) +
+    ylab(NULL) +
+    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%b %d") +
+    theme_bg() +
+    theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
 
 ```{r sepsis_dayweek}
@@ -287,7 +304,24 @@ oncall_dayweek <- data_clin %>%
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
 
+```{r oncall_weekly}
+oncall_weekly <- data_clin %>%
+    filter(rec_week >= ymd("2017-07-24")) %>%
+    select(-activity) %>%
+    gather(act_num, activity, act1:act6) %>%
+    filter(activity == "Resident On-Call") %>%
+    count(rec_week) %>%
+    ggplot(aes(x = rec_week, y = n)) +
+    geom_line() +
+    ggtitle("On-Call Questions by Week") +
+    xlab(NULL) +
+    ylab(NULL) +
+    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%b %d") +
+    theme_bg() +
+    theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
+```
+
 ```{r clinical, fig.width=8, fig.height=5, fig.align='center'}
-grid.arrange(sepsis_plot, oncall_plot, sepsis_dayweek, oncall_dayweek, ncol = 2)
+grid.arrange(sepsis_plot, oncall_plot, sepsis_weekly, oncall_weekly, ncol = 2)
 ```
 
