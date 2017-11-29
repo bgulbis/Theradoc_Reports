@@ -101,7 +101,7 @@ sepsis <- c("Initiate Antimicrobials",
 
 res <- data_frame(resident = c("Doyle, Meagan", "Kim, Sara", "Procopio, Vincent", "Moore, Megan", "Lai, Wei", "Leung, Helen", "Stephenson, Elizabeth", "Nguyen, Steffany", "Szymanski, Tom", "Wilson, Lance"))
 
-cur_month = mdy("10/1/2017")
+cur_month = mdy("11/1/2017")
 cur_quarter = mdy("10/1/2017")
 ```
 
@@ -223,10 +223,11 @@ sepsis_weekly <- data_clin %>%
     count(rec_week) %>%
     ggplot(aes(x = rec_week, y = n)) +
     geom_line() +
+    geom_smooth(method = "lm", color = "grey35") +
     ggtitle("Sepsis Alerts by Week") +
     xlab(NULL) +
     ylab(NULL) +
-    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%b %d") +
+    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%m/%d") +
     theme_bg() +
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
@@ -313,10 +314,11 @@ oncall_weekly <- data_clin %>%
     count(rec_week) %>%
     ggplot(aes(x = rec_week, y = n)) +
     geom_line() +
+    geom_smooth(method = "lm", color = "grey35") +
     ggtitle("On-Call Questions by Week") +
     xlab(NULL) +
     ylab(NULL) +
-    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%b %d") +
+    scale_x_datetime(date_breaks = "2 weeks", date_labels = "%m/%d") +
     theme_bg() +
     theme(plot.title = element_text(hjust = 0.5, size = 10, color = "grey35"))
 ```
