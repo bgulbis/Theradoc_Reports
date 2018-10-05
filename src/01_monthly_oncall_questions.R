@@ -3,7 +3,7 @@ library(readxl)
 library(lubridate)
 library(openxlsx)
 
-data_month <- mdy("8/1/2018", tz = "UTC")
+data_month <- mdy("9/1/2018", tz = "UTC")
 
 data_ext <- "data/raw"
 
