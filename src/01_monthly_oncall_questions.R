@@ -3,7 +3,7 @@ library(readxl)
 library(lubridate)
 library(openxlsx)
 
-data_month <- mdy("9/1/2018", tz = "UTC")
+data_month <- mdy("12/1/2018", tz = "UTC")
 
 data_ext <- "data/raw"
 
@@ -30,7 +30,7 @@ data_oncall <- data_ext %>%
 write.xlsx(
     data_oncall,
     paste0(
-        "/home/brian/Public/W_Pharmacy/Residency Programs/On-Call Questions/",
+        "/mnt/hgfs/W_Pharmacy/Residency Programs/On-Call Questions/",
         format(data_month, "%Y-%m-%d"),
         "_oncall_questions.xlsx"
     )
