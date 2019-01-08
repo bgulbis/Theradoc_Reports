@@ -23,8 +23,8 @@ library(gridExtra)
 data_ext <- "../data/raw"
 # data_tidy <- "../data/tidy/"
 
-cur_month = mdy("9/1/2018")
-cur_quarter = mdy("7/1/2018")
+cur_month = mdy("10/1/2018")
+cur_quarter = mdy("10/1/2018")
 
 clin_cols <- c(
     rep("text", 7), 
